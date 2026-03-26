@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Contrato</title>
+    <link rel="stylesheet" href="css/contrato.css">
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        Contratos
+    </div>
+
+    <!-- Conte�do -->
+    <div class="container">
+
+        
+        <h3>Criar Contrato</h3>
+
+        <div class="form-group">
+            <input type="text" id="empresaId" placeholder="Empresa ID">
+            <input type="text" id="planoId" placeholder="Plano ID">
+            <input type="text" id="diaVencimento" placeholder="Dia do Vencimento">
+            <button onclick="CriarContrato()">Criar Contrato</button>
+        </div>
+
+        <hr>
+
+        <!-- A��es -->
+        <div class="acoes">
+            <button onclick="ListarContrato()">Listar Contratos</button>
+        </div>
+
+   
+
+        <!-- Lista -->
+        <ul id="lista"></ul>
+
+        <br>
+
+        <!-- Bot�o Voltar -->
+        <button onclick="voltarMenu()">Voltar ao Menu</button>
+
+    </div>
+
+    <script src="js/contrato.js"></script>
+
+    <script>
+        function voltarMenu() {
+            window.location.href = "menu.html";
+        }
+    </script>
+
+</body>
+</html>

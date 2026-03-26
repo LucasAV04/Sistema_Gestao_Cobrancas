@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagamento</title>
+    <link rel="stylesheet" href="css/pagamento.css">
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        Pagamentos
+    </div>
+
+    <!-- Conte�do -->
+    <div class="container">
+
+        <div class="acoes">
+          
+
+            <button onclick="ListarPagamento()">Listar Pagamentos</button>
+
+            <br><br>
+
+                <div class="form-group">
+                    <h3>Registrar Pagamento</h3>
+                    <input type="text" id="faturaId" placeholder="Fatura ID">
+                    <input type="text" id="valorPagamento" placeholder="Valor do Pagamento">
+                    <input type="text" id="formaPagamento" placeholder="Forma de Pagamento">
+                    <button onclick="RegistrarPagamento()">Registrar Pagamento</button>
+                </div>
+        </div>
+      
+
+
+
+        <!-- Lista -->
+        <ul id="lista"></ul>
+
+        <br>
+
+        <!-- Bot�o Voltar -->
+        <button onclick="voltarMenu()">Voltar ao Menu</button>
+
+    </div>
+
+    <script src="js/pagamento.js"></script>
+
+    <script>
+        function voltarMenu() {
+            window.location.href = "menu.html";
+        }
+    </script>
+
+</body>
+</html>l>

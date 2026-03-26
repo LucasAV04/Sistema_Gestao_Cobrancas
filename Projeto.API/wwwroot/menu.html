@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu Principal</title>
+    <link rel="stylesheet" href="css/menu.css">
+</head>
+<body>
+
+    <div class="top-bar">
+        <h2>Sistema de Gestão de Contratos e Cobranças</h2>
+        <button onclick="logout()">Sair</button>
+    </div>
+
+    <div class="menu-container">
+
+        <div class="menu-card" onclick="irPara('empresa.html')">
+            Empresa Cliente
+        </div>
+
+        <div class="menu-card" onclick="irPara('plano.html')">
+            Plano
+        </div>
+
+        <div class="menu-card" onclick="irPara('contrato.html')">
+            Contrato
+        </div>
+
+        <div class="menu-card" onclick="irPara('fatura.html')">
+            Fatura
+        </div>
+
+        <div class="menu-card " onclick="irPara('pagamento.html')">
+            Pagamento
+        </div>
+
+    </div>
+
+    <script src="js/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #d3cbcb;
+}
+
+.top-bar {
+    background: #1e3c72;
+    color: white;
+    padding: 30px 30px;
+    position: relative; /* importante */
+    text-align: center; /* centraliza o título */
+}
+
+    .top-bar h2 {
+        margin: 0;
+    }
+
+    .top-bar button {
+        position: absolute;
+        right: 30px; /* canto direito */
+        top: 50%;
+        transform: translateY(-50%); /* centraliza verticalmente */
+
+        padding: 17px 20px;
+        border: none;
+        background: #ff4d4d;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+.menu-container {
+    display: flex;
+    flex-direction: column; 
+    gap: 20px;
+    padding: 40px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.menu-card {
+    background: white;
+    padding: 50px;
+    text-align: center;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+    .menu-card:hover {
+        background: #1e3c72;
+        color: white;
+        transform: translateY(-5px);
+    }
+S

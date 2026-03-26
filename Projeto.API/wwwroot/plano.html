@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Plano</title>
+    <link rel="stylesheet" href="css/Plano.css">
+</head>
+<body>
+
+
+    <div class="top-bar">
+        Planos
+    </div>
+
+ 
+    <div class="container">
+
+      
+        <h3>Criar Plano</h3>
+
+        <div class="form-group">
+            <input type="text" id="nome" placeholder="Nome">
+            <input type="text" id="valorMensal" placeholder="Valor Mensal">
+            <input type="text" id="limiteUsuario" placeholder="Limite Usuario">
+            <button onclick="AdicionarPlano()">Adicionar Plano</button>
+        </div>
+
+        <hr>
+
+        <div class="acoes">
+            <button onclick="ListarPlano()">Listar Planos</button>
+            <button onclick="ListarAtivos()">Listar Ativos</button>
+        </div>
+
+       
+        <ul id="lista"></ul>
+
+        <br>
+
+        <button onclick="voltarMenu()">Voltar ao Menu</button>
+
+    </div>
+
+    <script src="js/plano.js"></script>
+
+    <script>
+        function voltarMenu() {
+            window.location.href = "menu.html";
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Empresa Cliente</title>
+    <link rel="stylesheet" href="css/Empresa.css">
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        Empresa Cliente
+    </div>
+
+    <!-- Conte�do -->
+    <div class="container">
+
+        <!-- Criar Empresa -->
+        <h3>Criar Empresa</h3>
+
+        <div class="form-group">
+            <input type="text" id="razaoSocial" placeholder="Raz�o Social">
+            <input type="text" id="cnpj" placeholder="CNPJ">
+            <input type="email" id="email" placeholder="Email">
+            <button onclick="criarEmpresa()">Criar Empresa</button>
+        </div>
+
+        <hr>
+
+        <!-- A��es -->
+        <div class="acoes">
+            <button onclick="listarEmpresas()">Listar Todas</button>
+            <button onclick="listarAtivos()">Listar Ativas</button>
+        </div>
+
+        <hr>
+
+        <!-- Buscar por ID -->
+        <div class="buscar">
+            <input type="number" id="empresaIdBusca" placeholder="Buscar por ID">
+            <button onclick="buscarPorId()">Buscar</button>
+        </div>
+
+        <hr>
+
+        <!-- Lista -->
+        <ul id="lista"></ul>
+
+        <br>
+
+        <!-- Bot�o Voltar -->
+        <button onclick="voltarMenu()">Voltar ao Menu</button>
+
+    </div>
+
+    <script src="js/Empresa.js"></script>
+
+    <script>
+        function voltarMenu() {
+            window.location.href = "menu.html";
+        }
+    </script>
+
+</body>
+</html>

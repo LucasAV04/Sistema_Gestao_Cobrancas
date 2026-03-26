@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Fatura</title>
+    <link rel="stylesheet" href="css/fatura.css">
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        Faturas
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="container">
+
+        <hr>
+
+        <!-- Ações -->
+        <div class="acoes">
+            <!-- Campo para buscar faturas de um contrato -->
+            <input type="text" id="contratoIdBusca" placeholder="Digite o ID do contrato">
+            <button onclick="ListarFaturaContrato()">Listar Fatura Por Contrato</button>
+
+            <br><br>
+
+            <!-- Botão para listar todas as faturas em aberto -->
+            <button onclick="ListarFaturasEmAberto()">Listar Faturas em Aberto</button>
+
+            <br><br>
+
+            <!-- Campos para gerar nova fatura -->
+            <input type="text" id="empresaId" placeholder="Empresa ID">
+            <input type="text" id="planoId" placeholder="Plano ID">
+            <input type="text" id="diaVencimento" placeholder="Dia do Vencimento">
+            <button onclick="GerarFatura()">Gerar Fatura</button>
+        </div>
+
+        <!-- Lista de faturas -->
+        <ul id="lista"></ul>
+
+        <br>
+
+        <!-- Botão Voltar -->
+        <button onclick="voltarMenu()">Voltar ao Menu</button>
+
+    </div>
+
+    <script src="js/fatura.js"></script>
+
+    <script>
+        function voltarMenu() {
+            window.location.href = "menu.html";
+        }
+    </script>
+
+</body>
+</html>
