@@ -1,10 +1,8 @@
-﻿using Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Domain.Entities;
-using Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.Repositories.Interfaces;
-using System.Diagnostics.Contracts;
-using static Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Domain.Entities.Fatura;
+﻿
 
-namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.Repositories.Sqlite
-{
+using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
+
+namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite;
     public class FaturaSqlite:IFaturaRepository
     {
         public void GerarFatura(Fatura fatura)
@@ -39,7 +37,7 @@ namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.R
                 return null;
 
             int statusInt = reader.GetInt32(4);
-            StatusFatura status = (StatusFatura)statusInt;
+            Fatura.StatusFatura status = (Fatura.StatusFatura)statusInt;
             DateTime? dataVencimento = null;
             if (!reader.IsDBNull(5))
             {
@@ -84,7 +82,7 @@ namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.R
             while (reader.Read())
             {
                 int statusInt = reader.GetInt32(4);
-                StatusFatura status = (StatusFatura)statusInt;
+                Fatura.StatusFatura status = (Fatura.StatusFatura)statusInt;
                 DateTime? dataVencimento = null;
                 if (!reader.IsDBNull(5))
                 {
@@ -115,4 +113,4 @@ namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.R
                 throw new Exception("Fatura não Encontrada");
         }
     }  
-}
+

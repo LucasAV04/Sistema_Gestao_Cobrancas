@@ -1,8 +1,6 @@
-﻿using Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Domain.Entities;
-using Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.Repositories.Interfaces;
-using static Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Domain.Entities.Contrato;
-
-namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.Repositories.Sqlite
+﻿using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
+using Projeto.Domain;
+namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
 {
     public class ContratoSqlite:IContratoRepository
     {
@@ -54,7 +52,7 @@ namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.R
                 dataFim = DateTime.Parse(dataFimStr);
             }
             int statusInt = reader.GetInt32(5);
-            StatusContrato status = (StatusContrato)statusInt;
+            Contrato.StatusContrato status = (Contrato.StatusContrato)statusInt;
 
             return new Contrato
             {
@@ -89,7 +87,7 @@ namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.R
                     dataFim = DateTime.Parse(dataFimStr);
                 }
                 int statusInt = reader.GetInt32(5);
-                StatusContrato status = (StatusContrato)statusInt;
+                Contrato.StatusContrato status = (Contrato.StatusContrato)statusInt;
 
                 lista.Add(new Contrato
                 {

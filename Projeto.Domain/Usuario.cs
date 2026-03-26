@@ -1,4 +1,4 @@
-﻿namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Domain.Entities
+﻿namespace Projeto.Domain
 {
     public class Usuario
     {

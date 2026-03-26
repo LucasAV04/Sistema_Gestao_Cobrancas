@@ -1,5 +1,5 @@
-﻿namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Domain.Entities
-{
+﻿using Projeto.Domain;
+
     public class Fatura
     {
         public int Id { get; set; }
@@ -18,5 +18,5 @@
             Baixada
         }
     }
-}
+
   

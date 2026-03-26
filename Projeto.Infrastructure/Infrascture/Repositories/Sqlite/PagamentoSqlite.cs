@@ -1,7 +1,8 @@
-﻿using Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Domain.Entities;
-using Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.Repositories.Interfaces;
+﻿
 
-namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.Repositories.Sqlite
+using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
+
+namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
 {
     public class PagamentoSqlite:IPagamentosRepository
     {

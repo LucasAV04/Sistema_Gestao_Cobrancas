@@ -1,6 +1,6 @@
-﻿using Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Domain.Entities;
+﻿
 
-namespace Sistema_de_Gestão_de_Contratos_e_Cobranças.ProjetoCore.Infrascture.Repositories.Interfaces
+namespace Projeto.Infrastructure.Infrascture.Repositories.Interfaces
 {
     public interface IEmpresaClienteRepository
     {
