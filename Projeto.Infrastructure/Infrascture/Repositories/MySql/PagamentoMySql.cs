@@ -1,14 +1,22 @@
 ﻿
 
 using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
+using Projeto.Infrastructure.Infrascture.Repositories.MySql;
 
-namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
+namespace Projeto.Infrastructure.Infrascture.Repositories.MySql
 {
-    public class PagamentoSqlite:IPagamentosRepository
+    public class PagamentoMySql:IPagamentosRepository
     {
+        private readonly MySqlConnectionFactory _connectionFactory;
+
+        public PagamentoMySql(MySqlConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
         public void RegistrarPagamento(Pagamento pagamento)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"INSERT INTO Pagamento (FaturaId,ValorPago,DataPagamento,FormaPagamento)
@@ -23,7 +31,8 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
 
         public List<Pagamento> Listar()
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Pagamento";
@@ -32,22 +41,21 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
             var lista = new List<Pagamento>();
             while (reader.Read())
             {
-                string dataPagamentoStr = reader.GetString(3);
-                DateTime dataPagamento = DateTime.Parse(dataPagamentoStr);
                 lista.Add(new Pagamento
                 {
-                    Id = reader.GetInt32(0),
-                    FaturaId = reader.GetInt32(1),
-                    ValorPago = reader.GetDecimal(2),
-                    DataPagamento = dataPagamento,
-                    FormaPagamento = reader.GetString(4)
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    FaturaId = reader.GetInt32(reader.GetOrdinal("FaturaId")),
+                    ValorPago = reader.GetDecimal(reader.GetOrdinal("ValorPago")),
+                    DataPagamento = reader.GetDateTime(reader.GetOrdinal("DataPagamento")),
+                    FormaPagamento = reader.GetString(reader.GetOrdinal("FormaPagamento"))
                 });
             }
             return lista;
         }
         public List<Pagamento> ListarPagamentoFatura(int faturaId)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Pagamento WHERE FaturaId = @faturaId";
@@ -58,16 +66,14 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
 
             while (reader.Read())
             {
-                string dataPagamentoStr = reader.GetString(3);
-                DateTime dataPagamento = DateTime.Parse(dataPagamentoStr);
-
+              
                 lista.Add(new Pagamento
                 {
-                    Id = reader.GetInt32(0),
-                    FaturaId = reader.GetInt32(1),
-                    ValorPago = reader.GetDecimal(2),
-                    DataPagamento = dataPagamento,
-                    FormaPagamento = reader.GetString(4)
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    FaturaId = reader.GetInt32(reader.GetOrdinal("FaturaId")),
+                    ValorPago = reader.GetDecimal(reader.GetOrdinal("ValorPago")),
+                    DataPagamento = reader.GetDateTime(reader.GetOrdinal("DataPagamento")),
+                    FormaPagamento = reader.GetString(reader.GetOrdinal("FormaPagamento"))
                 });
             }
 
@@ -76,7 +82,8 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
 
         public void Deletar(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"DELETE FROM Pagamento WHERE Id = @id";

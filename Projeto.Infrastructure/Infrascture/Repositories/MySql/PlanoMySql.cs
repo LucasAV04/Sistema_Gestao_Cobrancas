@@ -1,13 +1,21 @@
 ﻿
 using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
+using Projeto.Infrastructure.Infrascture.Repositories.MySql;
 
-namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
+namespace Projeto.Infrastructure.Infrascture.Repositories.MySql
 {
-    public class PlanoSqlite:IPlanoRepository
+    public class PlanoMySql:IPlanoRepository
     {
+        private readonly MySqlConnectionFactory _connectionFactory;
+
+        public PlanoMySql(MySqlConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
         public void Adicionar(Plano plano)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"INSERT INTO Plano (Nome,ValorMensal,LimiteUsuarios,Ativo)
@@ -22,7 +30,8 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
 
         public Plano BuscarPorId(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Plano WHERE Id = @id";
@@ -35,17 +44,18 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
             }
             return new Plano
             {
-                Id = reader.GetInt32(0),
-                Nome = reader.GetString(1),
-                ValorMensal = reader.GetDecimal(2),
-                LimiteUsuarios = reader.GetInt32(3),
-                Ativo = reader.GetInt32(4) == 1
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                Nome = reader.GetString(reader.GetOrdinal("Nome")),
+                ValorMensal = reader.GetDecimal(reader.GetOrdinal("ValorMensal")),
+                LimiteUsuarios = reader.GetInt32(reader.GetOrdinal("LimiteUsuarios")),
+                Ativo = reader.GetInt32(reader.GetOrdinal("Ativo")) == 1
             };
-        }
+        }   
 
         public void Atualizar(Plano plano)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection =  _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"UPDATE Plano SET Nome = @nome,ValorMensal = @valorMensal,LimiteUsuarios = @limiteUsuarios,Ativo = @ativo WHERE Id = @id";
@@ -60,7 +70,8 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
 
         public List<Plano> Listar()
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Plano";
@@ -70,18 +81,19 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
             {
                 lista.Add(new Plano
                 {
-                    Id = reader.GetInt32(0),
-                    Nome = reader.GetString(1),
-                    ValorMensal = reader.GetDecimal(2),
-                    LimiteUsuarios = reader.GetInt32(3),
-                    Ativo = reader.GetInt32(4) == 1
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    Nome = reader.GetString(reader.GetOrdinal("Nome")),
+                    ValorMensal = reader.GetDecimal(reader.GetOrdinal("ValorMensal")),
+                    LimiteUsuarios = reader.GetInt32(reader.GetOrdinal("LimiteUsuarios")),
+                    Ativo = reader.GetInt32(reader.GetOrdinal("Ativo")) == 1
                 });
             }
             return lista;
         }
         public void RemoverPlano(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"DELETE FROM Plano WHERE Id = @id";

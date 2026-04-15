@@ -1,13 +1,23 @@
 ﻿
 
+using Org.BouncyCastle.Asn1.Mozilla;
 using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
+using Projeto.Infrastructure.Infrascture.Repositories.MySql;
 
-namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite;
-    public class FaturaSqlite:IFaturaRepository
+namespace Projeto.Infrastructure.Infrascture.Repositories.MySql;
+    public class FaturaMySql:IFaturaRepository
     {
+        private readonly MySqlConnectionFactory _connectionFactory;
+        
+        public FaturaMySql(MySqlConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
+
         public void GerarFatura(Fatura fatura)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"INSERT INTO Fatura(ContratoId,MesReferencia,Valor,Status,DataVencimento)
@@ -26,7 +36,8 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite;
         
         public Fatura BuscarPorId(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Fatura WHERE Id = @id";
@@ -38,25 +49,21 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite;
 
             int statusInt = reader.GetInt32(4);
             Fatura.StatusFatura status = (Fatura.StatusFatura)statusInt;
-            DateTime? dataVencimento = null;
-            if (!reader.IsDBNull(5))
-            {
-                string dataVencimentoStr = reader.GetString(5);
-                dataVencimento = DateTime.Parse(dataVencimentoStr);  
-            }
+           
             return new Fatura
             {
-                Id = reader.GetInt32(0),
-                ContratoId = reader.GetInt32(1),
-                MesReferencia = reader.GetString(2),
-                Valor = reader.GetDecimal(3),
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                ContratoId = reader.GetInt32(reader.GetOrdinal("ContratoId")),
+                MesReferencia = reader.GetString(reader.GetOrdinal("MesReferencia")),
+                Valor = reader.GetDecimal(reader.GetOrdinal("Valor")),
                 Status = status,
-                DataVencimento = dataVencimento
+                DataVencimento = reader.GetDateTime(reader.GetOrdinal("DataVencimento"))
             };
         }
         public void AtualizarFatura(Fatura fatura)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"UPDATE Fatura SET ContratoId = @contratoId,MesReferencia = @mesReferencia,
@@ -73,7 +80,8 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite;
         }
         public List<Fatura> Listar()
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Fatura";
@@ -83,28 +91,22 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite;
             {
                 int statusInt = reader.GetInt32(4);
                 Fatura.StatusFatura status = (Fatura.StatusFatura)statusInt;
-                DateTime? dataVencimento = null;
-                if (!reader.IsDBNull(5))
-                {
-                    string dataVencimentoStr = reader.GetString(5);
-                    dataVencimento = DateTime.Parse(dataVencimentoStr);
-                }
                 lista.Add(new Fatura
                 {
-
-                    Id = reader.GetInt32(0),
-                    ContratoId = reader.GetInt32(1),
-                    MesReferencia = reader.GetString(2),
-                    Valor = reader.GetDecimal(3),
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    ContratoId = reader.GetInt32(reader.GetOrdinal("ContratoId")),
+                    MesReferencia = reader.GetString(reader.GetOrdinal("MesReferencia")),
+                    Valor = reader.GetDecimal(reader.GetOrdinal("Valor")),
                     Status = status,
-                    DataVencimento = dataVencimento
+                    DataVencimento = reader.GetDateTime(reader.GetOrdinal("DataVencimento"))
                 });
             }
             return lista;
         }
         public void RemoverFatura(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"DELETE FROM Fatura WHERE Id = @id";

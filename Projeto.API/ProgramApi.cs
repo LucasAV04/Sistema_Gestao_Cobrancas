@@ -7,7 +7,7 @@ using System.Text;
 using QuestPDF.Infrastructure;
 using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
 using Projeto.Application;
-using Projeto.Infrastructure.Infrascture.Repositories.Sqlite;
+using Projeto.Infrastructure.Infrascture.Repositories.MySql;
 
 
 
@@ -84,16 +84,19 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Seus serviços
-builder.Services.AddSingleton<IEmpresaClienteRepository, EmpresaClienteSqlite>();
-builder.Services.AddSingleton<EmpresaClienteService>();
-builder.Services.AddSingleton<IPlanoRepository,PlanoSqlite>();
-builder.Services.AddSingleton<PlanoService>();
-builder.Services.AddSingleton<IContratoRepository,ContratoSqlite>();  
-builder.Services.AddSingleton<ContratoService>();
-builder.Services.AddSingleton<IFaturaRepository,FaturaSqlite>();
-builder.Services.AddSingleton<FaturaService>();
-builder.Services.AddSingleton<IPagamentosRepository,PagamentoSqlite>();
-builder.Services.AddSingleton<PagamentoService>();
+builder.Services.AddScoped<MySqlConnectionFactory>();
+
+builder.Services.AddScoped<IEmpresaClienteRepository, EmpresaClienteMySql>();
+builder.Services.AddScoped<IPlanoRepository, PlanoMySql>();
+builder.Services.AddScoped<IContratoRepository, ContratoMySql>();
+builder.Services.AddScoped<IFaturaRepository, FaturaMySql>();
+builder.Services.AddScoped<IPagamentosRepository, PagamentoMySql>();
+
+builder.Services.AddScoped<EmpresaClienteService>();
+builder.Services.AddScoped<PlanoService>();
+builder.Services.AddScoped<ContratoService>();
+builder.Services.AddScoped<FaturaService>();
+builder.Services.AddScoped<PagamentoService>();
 // 🔥 SOMENTE UMA VEZ
 var app = builder.Build();
 app.UseHttpsRedirection();

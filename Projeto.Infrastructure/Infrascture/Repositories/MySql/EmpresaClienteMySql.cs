@@ -1,13 +1,20 @@
-﻿
+﻿using MySql.Data.MySqlClient;
 using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
 
-namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
+namespace Projeto.Infrastructure.Infrascture.Repositories.MySql
 {
-    public class EmpresaClienteSqlite:IEmpresaClienteRepository
+    public class EmpresaClienteMySql:IEmpresaClienteRepository
     {
+        private readonly MySqlConnectionFactory _connectionFactory;
+        public EmpresaClienteMySql(MySqlConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
         public void Adicionar(EmpresaCliente empresaCliente)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
+
             var command =  connection.CreateCommand();
 
             command.CommandText = @"INSERT INTO Empresa (RazaoSocial,Cnpj,Email,Ativo,DataCadastro)
@@ -23,7 +30,8 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
         
         public EmpresaCliente BuscarPorId(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Empresa WHERE Id = @id";
@@ -34,24 +42,22 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
             {
                 return null;
             }
-            string dataCadastroStr = reader.GetString(5);
-            DateTime dataCadastro = DateTime.Parse(dataCadastroStr);
-
             return new EmpresaCliente
             {
-                Id = reader.GetInt32(0),
-                RazaoSocial = reader.GetString(1),
-                Cnpj = reader.GetString(2),
-                Email = reader.GetString(3),
-                Ativo = reader.GetInt32(4) == 1,
-                DataCadastro = dataCadastro
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                RazaoSocial = reader.GetString(reader.GetOrdinal("RazaoSocial")),
+                Cnpj = reader.GetString(reader.GetOrdinal("Cnpj")),
+                Email = reader.GetString(reader.GetOrdinal("Email")),
+                Ativo = reader.GetInt32(reader.GetOrdinal("Ativo")) == 1,
+                DataCadastro = reader.GetDateTime(reader.GetOrdinal("DataCadastro"))
             };
 
         }
 
         public EmpresaCliente BuscarPorCnpj(string cnpj)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Empresa WHERE Cnpj = @cnpj";
@@ -62,22 +68,22 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
             {
                 return null;
             }
-            string dataCadastroStr = reader.GetString(5);
-            DateTime dataCadastro = DateTime.Parse(dataCadastroStr);
+          
 
             return new EmpresaCliente
             {
-                Id = reader.GetInt32(0),
-                RazaoSocial = reader.GetString(1),
-                Cnpj = reader.GetString(2),
-                Email = reader.GetString(3),
-                Ativo = reader.GetInt32(4) == 1,
-                DataCadastro = dataCadastro
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                RazaoSocial = reader.GetString(reader.GetOrdinal("RazaoSocial")),
+                Cnpj = reader.GetString(reader.GetOrdinal("Cnpj")),
+                Email = reader.GetString(reader.GetOrdinal("Email")),
+                Ativo = reader.GetInt32(reader.GetOrdinal("Ativo")) == 1,
+                DataCadastro = reader.GetDateTime(reader.GetOrdinal("DataCadastro"))
             };
         }
         public void Atualizar(EmpresaCliente empresaCliente)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"UPDATE Empresa SET RazaoSocial = @razaoSocial,Cnpj = @cnpj,Email = @email,Ativo = @ativo WHERE Id = @id";
@@ -91,7 +97,8 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
         }
         public List<EmpresaCliente> ListarTodas()
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Empresa";
@@ -100,23 +107,22 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
            
             while (reader.Read())
             {
-                string dataCadastroStr = reader.GetString(5);
-                DateTime dataCadastro = DateTime.Parse(dataCadastroStr);
                 lista.Add(new EmpresaCliente
                 {
-                    Id = reader.GetInt32(0),
-                    RazaoSocial = reader.GetString(1),
-                    Cnpj = reader.GetString(2),
-                    Email = reader.GetString(3),
-                    Ativo = reader.GetInt32(4) == 1,
-                    DataCadastro = dataCadastro
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    RazaoSocial = reader.GetString(reader.GetOrdinal("RazaoSocial")),
+                    Cnpj = reader.GetString(reader.GetOrdinal("Cnpj")),
+                    Email = reader.GetString(reader.GetOrdinal("Email")),
+                    Ativo = reader.GetInt32(reader.GetOrdinal("Ativo")) == 1,
+                    DataCadastro = reader.GetDateTime(reader.GetOrdinal("DataCadastro"))
                 });
             }
             return lista;
         }
         public void RemoverEmpresaCliente(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection =  _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"DELETE FROM Empresa WHERE Id = @id";

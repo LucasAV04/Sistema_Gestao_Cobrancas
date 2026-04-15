@@ -1,37 +1,51 @@
 ﻿using Projeto.Infrastructure.Infrascture.Repositories.Interfaces;
 using Projeto.Domain;
-namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
+using Projeto.Infrastructure.Infrascture.Repositories.MySql;
+using Org.BouncyCastle.Crypto.Signers;
+namespace Projeto.Infrastructure.Infrascture.Repositories.MySql
 {
-    public class ContratoSqlite:IContratoRepository
+    public class ContratoMySql:IContratoRepository
     {
+        private readonly  MySqlConnectionFactory _connectionFactory;
+
+        public ContratoMySql(MySqlConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
+
         public void CriarContrato(Contrato contrato)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
+
             using var command = connection.CreateCommand();
 
             command.CommandText = @"INSERT INTO Contrato 
-        (EmpresaClienteId, PlanoId, DataInicio, DataFim, Status, DiaVencimento)
-        VALUES (@empresaClienteId, @planoId, @dataInicio, @dataFim, @status, @diaVencimento)";
+    (EmpresaClienteId, PlanoId, DataInicio, DataFim, Status, DiaVencimento)
+    VALUES (@empresaClienteId, @planoId, @dataInicio, @dataFim, @status, @diaVencimento)";
 
-            command.Parameters.AddWithValue("@empresaClienteId",contrato.EmpresaClienteId);
-            command.Parameters.AddWithValue("@planoId",contrato.PlanoId);
+            command.Parameters.AddWithValue("@empresaClienteId", contrato.EmpresaClienteId);
+            command.Parameters.AddWithValue("@planoId", contrato.PlanoId);
+            command.Parameters.AddWithValue("@dataInicio", contrato.DataInicio);
 
-            command.Parameters.AddWithValue("@dataInicio", contrato.DataInicio.ToString("yyyy-MM-dd HH:mm:ss"));
             if (contrato.DataFim.HasValue)
-                command.Parameters.AddWithValue("@dataFim", contrato.DataFim.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+                command.Parameters.AddWithValue("@dataFim", contrato.DataFim.Value);
             else
                 command.Parameters.AddWithValue("@dataFim", DBNull.Value);
-            command.Parameters.AddWithValue("@status", (int)contrato.Status);
 
+            command.Parameters.AddWithValue("@status", (int)contrato.Status);
             command.Parameters.AddWithValue("@diaVencimento", contrato.DiaVencimento);
 
             command.ExecuteNonQuery();
+
+            contrato.Id = (int)command.LastInsertedId;
 
         }
 
         public Contrato BuscarPorId(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Contrato WHERE Id = @id";
@@ -42,33 +56,31 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
             {
                 return null;
             }
-            string dataInicioStr = reader.GetString(3);
-            DateTime dataInicio = DateTime.Parse(dataInicioStr);
-
             DateTime? dataFim = null;
-            if (!reader.IsDBNull(4))
+            if (!reader.IsDBNull(reader.GetOrdinal("DataFim")))
             {
-                string dataFimStr = reader.GetString(4);
+                string dataFimStr = reader.GetString(reader.GetOrdinal("DataFim"));
                 dataFim = DateTime.Parse(dataFimStr);
             }
-            int statusInt = reader.GetInt32(5);
+            int statusInt = reader.GetInt32(reader.GetOrdinal("Status"));
             Contrato.StatusContrato status = (Contrato.StatusContrato)statusInt;
 
             return new Contrato
             {
-                Id = reader.GetInt32(0),
-                EmpresaClienteId = reader.GetInt32(1),
-                PlanoId = reader.GetInt32(2),
-                DataInicio = dataInicio,
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                EmpresaClienteId = reader.GetInt32(reader.GetOrdinal("EmpresaClienteId")),
+                PlanoId = reader.GetInt32(reader.GetOrdinal("PlanoId")),
+                DataInicio = reader.GetDateTime(reader.GetOrdinal("DataInicio")),
                 DataFim = dataFim,
                 Status = status,
-                DiaVencimento = reader.GetInt32(6)
+                DiaVencimento = reader.GetInt32(reader.GetOrdinal("DiaVencimento"))
             };
         }
 
         public List<Contrato> Listar()
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             using var command = connection.CreateCommand();
 
             command.CommandText = @"SELECT * FROM Contrato";
@@ -77,34 +89,32 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
 
             while(reader.Read())
             {
-                string dataInicioStr = reader.GetString(3);
-                DateTime dataInicio = DateTime.Parse(dataInicioStr);
-
+                int statusInt = reader.GetInt32(reader.GetOrdinal("Status"));
+                Contrato.StatusContrato status = (Contrato.StatusContrato)statusInt;
                 DateTime? dataFim = null;
-                if (!reader.IsDBNull(4))
+                if (!reader.IsDBNull(reader.GetOrdinal("DataFim")))
                 {
-                    string dataFimStr = reader.GetString(4);
+                    string dataFimStr = reader.GetString(reader.GetOrdinal("DataFim"));
                     dataFim = DateTime.Parse(dataFimStr);
                 }
-                int statusInt = reader.GetInt32(5);
-                Contrato.StatusContrato status = (Contrato.StatusContrato)statusInt;
 
                 lista.Add(new Contrato
                 {
-                    Id = reader.GetInt32(0),
-                    EmpresaClienteId = reader.GetInt32(1),
-                    PlanoId = reader.GetInt32(2),
-                    DataInicio = dataInicio,
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    EmpresaClienteId = reader.GetInt32(reader.GetOrdinal("EmpresaClienteId")),
+                    PlanoId = reader.GetInt32(reader.GetOrdinal("PlanoId")),
+                    DataInicio = reader.GetDateTime(reader.GetOrdinal("DataInicio")),
                     DataFim = dataFim,
                     Status = status,
-                    DiaVencimento = reader.GetInt32(6)
+                    DiaVencimento = reader.GetInt32(reader.GetOrdinal("DiaVencimento"))
                 });
             }
             return lista;
         }
         public void Atualizar(Contrato contrato)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"UPDATE Contrato 
@@ -115,22 +125,26 @@ namespace Projeto.Infrastructure.Infrascture.Repositories.Sqlite
                                 Status = @status,
                                 DiaVencimento = @diaVencimento
                             WHERE Id = @id";
-
             command.Parameters.AddWithValue("@empresaClienteId", contrato.EmpresaClienteId);
             command.Parameters.AddWithValue("@planoId", contrato.PlanoId);
-            command.Parameters.AddWithValue("@dataInicio", contrato.DataInicio.ToString("yyyy-MM-dd HH:mm:ss"));
-            command.Parameters.AddWithValue("@dataFim", contrato.DataFim.HasValue
-                ? contrato.DataFim.Value.ToString("yyyy-MM-dd HH:mm:ss")
-                : DBNull.Value);
+            command.Parameters.AddWithValue("@dataInicio", contrato.DataInicio);
+
+            if (contrato.DataFim.HasValue)
+                command.Parameters.AddWithValue("@dataFim", contrato.DataFim.Value);
+            else
+                command.Parameters.AddWithValue("@dataFim", DBNull.Value);
+
             command.Parameters.AddWithValue("@status", (int)contrato.Status);
             command.Parameters.AddWithValue("@diaVencimento", contrato.DiaVencimento);
-            command.Parameters.AddWithValue("@id", contrato.Id);
 
             command.ExecuteNonQuery();
+
+            contrato.Id = (int)command.LastInsertedId;
         }
         public void RemoverContrato(int id)
         {
-            using var connection = SqliteConnectionFactory.Create();
+            using var connection = _connectionFactory.Create();
+            connection.Open();
             var command = connection.CreateCommand();
 
             command.CommandText = @"DELETE FROM Contrato WHERE Id = @id";

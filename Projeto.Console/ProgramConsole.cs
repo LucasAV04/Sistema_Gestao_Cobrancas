@@ -1,17 +1,22 @@
-﻿using Projeto.Application;
+﻿using Microsoft.Extensions.Configuration;
+using Projeto.Application;
 using Projeto.Infrastructure.Infrascture.Repositories.Memory;
-using Projeto.Infrastructure.Infrascture.Repositories.Sqlite;
+using Projeto.Infrastructure.Infrascture.Repositories.MySql;
+using Microsoft.Extensions.Configuration.Json;
 
 public class ProgramConsole
 {
     public static void Main(string[] args)
     {
+        var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+        var connectionFactory = new MySqlConnectionFactory(configuration);
         var usuRepo = new UsuarioRepositoryMemory();
-        var empRepo = new EmpresaClienteSqlite();
-        var contRepo = new ContratoSqlite();
-        var planoRepo = new PlanoSqlite();
-        var fatRepo = new FaturaSqlite();
-        var pagaRepo = new PagamentoSqlite();
+        var empRepo = new EmpresaClienteMySql(connectionFactory);
+        var contRepo = new ContratoMySql(connectionFactory);
+        var planoRepo = new PlanoMySql(connectionFactory);
+        var fatRepo = new FaturaMySql(connectionFactory);
+        var pagaRepo = new PagamentoMySql(connectionFactory);
 
         var usuService = new AuthService(usuRepo);
         var empService = new EmpresaClienteService(empRepo);
